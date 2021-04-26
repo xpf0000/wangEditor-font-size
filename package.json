@@ -1,0 +1,60 @@
+{
+  "name": "@xpf0000/vue-ckeditor4",
+  "version": "1.0.3",
+  "author": "xu pengfei 250881478@qq.com",
+  "main": "src/index.js",
+  "unpkg": "src/index.js",
+  "browser": {
+    "./sfc": "src/index.js"
+  },
+  "private": false,
+  "scripts": {
+    "serve": "vue-cli-service serve",
+  },
+  "husky": {
+    "hooks": {
+      "pre-commit": "lint-staged"
+    }
+  },
+  "lint-staged": {
+    "src/**/*.{js,vue}": [
+      "eslint --fix",
+      "git add"
+    ]
+  },
+  "dependencies": {
+    "vue": "^2.6.11",
+    "wangeditor": "^4.6.16"
+  },
+  "devDependencies": {
+    "@babel/plugin-transform-modules-umd": "^7.13.0",
+    "@babel/register": "^7.10.5",
+    "@vue/cli-plugin-babel": "^4.4.6",
+    "@vue/cli-plugin-eslint": "^4.4.6",
+    "@vue/cli-service": "^4.4.6",
+    "@vue/eslint-config-prettier": "^6.0.0",
+    "autoprefixer": "^9.8.6",
+    "babel-eslint": "^10.1.0",
+    "babel-plugin-component": "^1.1.1",
+    "compression-webpack-plugin": "^4.0.0",
+    "eslint": "^7.6.0",
+    "eslint-plugin-prettier": "^3.1.4",
+    "eslint-plugin-vue": "^6.2.2",
+    "husky": "^4.2.5",
+    "lint-staged": "^10.2.11",
+    "prettier": "^2.1.1",
+    "sass": "^1.26.10",
+    "sass-loader": "^9.0.3",
+    "script-loader": "^0.7.2",
+    "vue-template-compiler": "^2.6.11"
+  },
+  "keywords": [
+    "vue",
+    "element-ui",
+    "vue dialog"
+  ],
+  "engines": {
+    "node": ">=8.9",
+    "npm": ">= 3.0.0"
+  }
+}
