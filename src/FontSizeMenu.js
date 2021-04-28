@@ -16,9 +16,12 @@ class FontSizeList {
 }
 
 const removeChildFontSize = (dom) => {
+  dom.removeAttribute('size')
+  dom.style.fontSize = ''
   if (dom && dom.children) {
     let children = dom.children
     for (let child of children) {
+      child.removeAttribute('size')
       child.style.fontSize = ''
       removeChildFontSize(child)
     }
@@ -75,7 +78,7 @@ export default class FontSizeMenu extends wangEditor.DropListMenu {
       // 插入空白选区
       editor.selection.createEmptyRange()
     }
-    editor.cmd.do('fontSize', value)
+    editor.cmd.do('fontSize', 5)
     // 获取包含完整选区的元素
     let current = editor.selection._currentRange.commonAncestorContainer
     if (current.nodeType !== 1) {
@@ -88,16 +91,10 @@ export default class FontSizeMenu extends wangEditor.DropListMenu {
       // 根据选区的开始结束节点 获取实际选择的元素
       let start = editor.selection._currentRange.startContainer
       let end = editor.selection._currentRange.endContainer
-      if (start.nodeType !== 1) {
-        start = start.parentNode
-      }
-      if (end.nodeType !== 1) {
-        end = end.parentNode
-      }
-      let add = false
+      let add = start === current
       // 获取开始->结束之间的所有节点
       function find(start, end, el) {
-        for (let c of el.children) {
+        for (let c of el.childNodes) {
           if (c === start) {
             add = true
           }
