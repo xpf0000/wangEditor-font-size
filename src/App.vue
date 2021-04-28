@@ -13,6 +13,7 @@
     },
     mounted() {
       const editor = new E(this.$refs.editor)
+      editor.config.styleWithCSS = true
       editor.config.fontSizes = {
         '10px': { name: '10px', value: '10px' },
         '12px': { name: '12px', value: '12px' },
