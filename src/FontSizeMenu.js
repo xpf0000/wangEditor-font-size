@@ -31,7 +31,7 @@ export default class FontSizeMenu extends wangEditor.DropListMenu {
     const $elem = wangEditor.$(
       `<div class="w-e-menu" data-title="字号"><i class="w-e-icon-text-heigh"></i></div>`
     )
-    let fontStyleList = new FontSizeList(editor.config.fontSizes)
+    let fontStyleList = new FontSizeList(editor.config.fontSize)
     const fontListConf = {
       width: 160,
       title: '设置字号',
@@ -70,25 +70,21 @@ export default class FontSizeMenu extends wangEditor.DropListMenu {
       // 插入空白选区
       editor.selection.createEmptyRange()
     }
+    // 给定一个默认的值
     editor.cmd.do('fontSize', 5)
-
     // 获取包含完整选区的元素
-    let current = editor.selection._currentRange.commonAncestorContainer
+    let current = document.getSelection().getRangeAt(0).commonAncestorContainer
     if (current.nodeType !== 1) {
       current = current.parentNode
     }
-    console.log('current: ', current)
     let nodes = []
     // 获取当前文档内的选区
     let selection = document.getSelection()
-    console.log('selection: ', selection, selection.toString())
     // 获取选区内的所有节点
     function find(el) {
       for (let c of el.childNodes) {
-        console.log('c: ', c)
         if (selection.containsNode(c, false)) {
           if (c.nodeType !== 1) {
-            console.log('c.parentNode: ', c.parentNode)
             let p = c.parentNode
             if (!nodes.includes(p)) {
               nodes.push(p)
