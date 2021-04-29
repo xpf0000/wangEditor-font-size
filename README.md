@@ -4,8 +4,7 @@
 
 ### 如果想支持IE 可以根据选择范围自己去获取所有的选中节点 目前未找到官方的方法去获取 只能根据选区Range 自己处理
 
-### 此方法还有个问题 就是非styleWithCss模式或firefox浏览器中 会把内容拆的很碎 默认的document.execCommand('fontSize') 方法, 会自动拆分合并内容, 但是font标签上一旦加上style, 会导致无法合并内容, 
-对同一段内容多次设置字体的时候, 会生成很多<font>标签
+### 此方法还有个问题 就是非styleWithCss模式或firefox浏览器中 会把内容拆的很碎 默认的document.execCommand('fontSize') 方法, 会自动拆分合并内容, 但是font标签上一旦加上style, 会导致无法合并内容, 对同一段内容多次设置字体的时候, 会生成很多<font>标签
  
 ```js
 import wangEditor from 'wangeditor'
