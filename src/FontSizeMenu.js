@@ -16,12 +16,9 @@ class FontSizeList {
 }
 
 const removeChildFontSize = (dom) => {
-  dom.removeAttribute('size')
-  dom.style.fontSize = ''
   if (dom && dom.children) {
     let children = dom.children
     for (let child of children) {
-      child.removeAttribute('size')
       child.style.fontSize = ''
       removeChildFontSize(child)
     }
@@ -34,7 +31,7 @@ export default class FontSizeMenu extends wangEditor.DropListMenu {
     const $elem = wangEditor.$(
       `<div class="w-e-menu" data-title="字号"><i class="w-e-icon-text-heigh"></i></div>`
     )
-    let fontStyleList = new FontSizeList(editor.config.fontSizes)
+    let fontStyleList = new FontSizeList(editor.config.fontSize)
     const fontListConf = {
       width: 160,
       title: '设置字号',
@@ -53,11 +50,6 @@ export default class FontSizeMenu extends wangEditor.DropListMenu {
    */
   command(value) {
     const editor = this.editor
-    const styleWithCSS = editor.config.styleWithCSS
-    // 此方式只能在styleWithCSS模式下生效 临时切换模式
-    if (!styleWithCSS) {
-      document.execCommand('styleWithCSS', false, 'true')
-    }
     const isEmptySelection = editor.selection.isSelectionEmpty()
 
     let selectionElem = editor.selection.getSelectionContainerElem()?.elems[0]
@@ -78,67 +70,44 @@ export default class FontSizeMenu extends wangEditor.DropListMenu {
       // 插入空白选区
       editor.selection.createEmptyRange()
     }
+    // 给定一个默认的值
     editor.cmd.do('fontSize', 5)
     // 获取包含完整选区的元素
-    let current = editor.selection._currentRange.commonAncestorContainer
+    let current = document.getSelection().getRangeAt(0).commonAncestorContainer
     if (current.nodeType !== 1) {
       current = current.parentNode
     }
     let nodes = []
-    if (!current.children || current.children.length === 0) {
-      nodes = [current]
-    } else {
-      // 根据选区的开始结束节点 获取实际选择的元素
-      let start = editor.selection._currentRange.startContainer
-      let end = editor.selection._currentRange.endContainer
-      let add = start === current
-      // 获取开始->结束之间的所有节点
-      function find(start, end, el) {
-        for (let c of el.childNodes) {
-          if (c === start) {
-            add = true
-          }
-          if (add) {
-            nodes.push(c)
-          }
-          if (c === end) {
-            break
-          }
-          find(start, end, c)
-        }
-      }
-      find(start, end, current)
-      nodes.splice(nodes.indexOf(end) + 1)
-      // 检测结束节点 节点是否父节点的最后一个节点 如果不是 递归排除父节点 如果是 向上递归检测
-      function checkEnd(end) {
-        let parent = end.parentNode
-        let last = parent.lastChild
-        if (end !== last) {
-          while (parent) {
-            if (nodes.includes(parent)) {
-              nodes.splice(nodes.indexOf(parent), 1)
+    // 获取当前文档内的选区
+    let selection = document.getSelection()
+    // 获取选区内的所有节点
+    function find(el) {
+      for (let c of el.childNodes) {
+        if (selection.containsNode(c, false)) {
+          if (c.nodeType !== 1) {
+            let p = c.parentNode
+            if (!nodes.includes(p)) {
+              nodes.push(p)
             }
-            parent = parent.parentNode
+          } else {
+            if (!nodes.includes(c)) {
+              nodes.push(c)
+            }
           }
-        } else {
-          checkEnd(parent)
         }
+        find(c)
       }
-      checkEnd(end)
     }
-    // 设置选择的元素的字号 移除子元素的字号 添加自身的字号
+    find(current)
+    // 设置选择的元素的字号 移除size属性 否则下次无法更改字号 添加自身的字号
     nodes.forEach((n) => {
-      removeChildFontSize(n)
+      n.removeAttribute('size')
       n.style.fontSize = value
     })
     if (isEmptySelection) {
       // 需要将选区范围折叠起来
       editor.selection.collapseRange()
       editor.selection.restoreSelection()
-    }
-    // 恢复用户配置的styleWithCSS模式
-    if (!styleWithCSS) {
-      document.execCommand('styleWithCSS', false, false)
     }
   }
 
